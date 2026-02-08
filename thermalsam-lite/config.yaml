@@ -1,0 +1,65 @@
+# ThermalSAM-Lite Configuration
+
+model:
+  checkpoint: "weights/sam_vit_b_01ec64.pth"
+  model_type: "vit_b"  # Options: vit_b, vit_l, vit_h
+  device: "cpu"  # Options: cpu, cuda
+  
+detection:
+  # Temperature range in Celsius
+  temperature_min: 20.0
+  temperature_max: 150.0
+  
+  # Confidence threshold (0.0 - 1.0)
+  confidence_threshold: 0.7
+  
+  # Area filtering (pixels)
+  min_area: 100
+  max_area: 100000
+  
+  # SAM-specific parameters
+  points_per_side: 32
+  pred_iou_thresh: 0.9
+  stability_score_thresh: 0.95
+  crop_n_layers: 1
+  min_mask_region_area: 100
+
+preprocessing:
+  # OpenCV colormap for false-color
+  colormap: "jet"  # Options: jet, hot, inferno, plasma, magma
+  normalize: true
+  
+  # Image resizing (set to null for no resizing)
+  max_image_size: 1024
+  
+  # Temperature calibration (for FLIR Lepton 3.5)
+  temp_offset: 27315.0
+  temp_gain: 100.0
+
+visualization:
+  # Mask transparency (0.0 - 1.0)
+  alpha: 0.6
+  
+  # Show labels and confidence
+  show_labels: true
+  show_confidence: true
+  show_temperature: true
+  
+  # Color scheme for different classes
+  colors:
+    human: [0, 255, 0]  # Green
+    human_cool: [0, 200, 0]
+    vehicle: [255, 0, 0]  # Blue
+    vehicle_hot: [255, 100, 0]
+    heat_source: [255, 0, 255]  # Magenta
+    object: [255, 255, 0]  # Yellow
+
+output:
+  # Default visualization modes
+  viz_modes: ["combined", "heatmap"]
+  
+  # Save format
+  save_format: "jpg"  # Options: jpg, png
+  
+  # Quality for JPG (0-100)
+  jpg_quality: 95
