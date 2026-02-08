@@ -9,9 +9,7 @@
 
 A curated collection of production-grade computer vision systems designed for defense and surveillance applications. Each project demonstrates expertise in real-time processing, edge deployment, and mission-critical reliability.
 
-**Built for:** Tonbo Imaging Vision & Deep Learning Engineer Role
-
-![Portfolio Overview](https://github.com/vraul92/cv-defense-portfolio/raw/main/assets/portfolio_overview.png)
+![Portfolio Overview](assets/portfolio_overview.png)
 
 ---
 
@@ -114,6 +112,113 @@ python ghost-tracker/demo_video.py --input your_video.mp4
 # Recon-Map
 python recon-map/demo.py --input your_video.mp4
 ```
+
+---
+
+## 📸 Paper Figures & Visual Explanations
+
+### SAM Architecture (Kirillov et al., 2023)
+
+![SAM Architecture](https://github.com/facebookresearch/segment-anything/raw/main/assets/model_diagram.png?raw=true)
+
+*Figure 1: SAM architecture consists of (1) an image encoder, (2) a flexible prompt encoder, and (3) a fast mask decoder. This design enables zero-shot transfer to new tasks and distributions.*
+
+**Key Components:**
+- **Image Encoder**: Vision Transformer (ViT) processing 1024×1024 images
+- **Prompt Encoder**: Supports points, boxes, and text prompts
+- **Mask Decoder**: Lightweight decoder predicting segmentation masks in ~50ms on CPU
+
+---
+
+### MiDaS Depth Estimation (Ranftl et al., 2022)
+
+![MiDaS Overview](https://github.com/isl-org/MiDaS/raw/master/output.gif)
+
+*Figure 2: MiDaS produces robust monocular depth estimates across diverse scenarios without retraining. The model uses a mixture of datasets for zero-shot cross-dataset transfer.*
+
+**Key Innovation:**
+- Multi-dataset training enables generalization
+- Scale-invariant loss handles unknown camera parameters
+- Runs in real-time on CPU
+
+---
+
+### Kalman Filter Cycle (Welch & Bishop, 1995)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    KALMAN FILTER CYCLE                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Prediction (Time Update)         Correction (Measurement) │
+│   ┌──────────────────┐             ┌─────────────────────┐  │
+│   │ x̂ₖ⁻ = F·x̂ₖ₋₁    │             │ K = Pₖ⁻·Hᵀ·S⁻¹     │  │
+│   │ Pₖ⁻ = F·Pₖ₋₁·Fᵀ + Q│           │ x̂ₖ = x̂ₖ⁻ + K·(z-H·x̂ₖ⁻)│ │
+│   └──────────────────┘             │ Pₖ = (I-K·H)·Pₖ⁻   │  │
+│           ↓                        └─────────────────────┘  │
+│      (Prior Estimate)                  (Posterior Estimate) │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+*Figure 3: The Kalman Filter operates in a two-step process: prediction (using motion model) and correction (using sensor measurements).*
+
+**Variables:**
+- **x̂**: State estimate
+- **P**: Error covariance
+- **F**: State transition matrix
+- **Q**: Process noise
+- **K**: Kalman gain
+- **H**: Measurement matrix
+- **R**: Measurement noise
+
+---
+
+### Epipolar Geometry (Ma et al., 2004)
+
+```
+    Image 1                      Image 2
+    ┌─────────┐                 ┌─────────┐
+    │    p    │ ─── Epipolar ─→ │ ─────── │
+    │    ●────┼─── Line ───────→┼─────●   │
+    │    │    │                 │    /    │
+    │    │    │                 │   /     │
+    └────┼────┘                 └───┼─────┘
+         │                          │
+         └───────────C──────────────┘
+              Baseline
+
+    Essential Matrix:  p₂ᵀ · E · p₁ = 0
+    
+    Where E = [t]× · R (cross product of translation × rotation)
+```
+
+*Figure 4: Epipolar geometry constrains where a point in one image can appear in another. The Essential Matrix E encodes the relative pose between two calibrated camera views.*
+
+---
+
+### ORB Feature Matching (Rublee et al., 2011)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ORB PIPELINE                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  FAST Corners              rBRIEF Descriptors               │
+│       ↓                           ↓                         │
+│  ┌─────────┐               ┌─────────────┐                  │
+│  │ ●  ●  ● │               │ 01010110... │                  │
+│  │   ●    │  ──Orientation→│ 128-bit     │                  │
+│  │ ●  ●  ● │    (oFAST)     │ binary      │                  │
+│  └─────────┘               └─────────────┘                  │
+│       │                           │                         │
+│       └────────── Hamming ────────┘                         │
+│                  Distance Matching                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+*Figure 5: ORB combines FAST keypoint detection with BRIEF descriptors, adding rotation invariance through orientation assignment.*
 
 ---
 
